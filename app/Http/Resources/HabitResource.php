@@ -14,11 +14,16 @@ class HabitResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        // Serve para formatar os dados exibidos na API 
+        // Usa make para retornar UM unico registro (modelo-objeto)
+        // Usa Collection para retornar +1
         return [
             'uuid' => $this->uuid,
             'name' => $this->name,
-            'meta' => [
-                'link' => route('api.habits.show', $this),
+            'user' => UserResource::make($this->whenLoaded('user')),
+            'logs' => HabitLogResource::collection($this->whenLoaded('logs')),
+            'links' => [
+                'self' => route('api.habits.show', $this),
             ]
         ];
     }

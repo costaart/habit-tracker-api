@@ -13,8 +13,30 @@ class HabitController extends Controller
 
     public function index()
     {
+        // Essa forma não é performática, pois ela busca todos os registros 1 vez, depois no Resource ele faz outra query buscando os relacionamentos
+        // return HabitResource::collection(
+        //    Habit::all()
+        // );
+
+        // Dessa forma, se eu passar já os relacionamentos ele poupa queries duplicadas
+        // return HabitResource::collection(
+        //     Habit::query()
+        //     ->with(['user', 'logs'])
+        //     ->get()
+        // );
+
+        // Trazer os resultados caso o tenha query na api ?with
         return HabitResource::collection(
-           Habit::all()
+            Habit::query()
+            ->when(
+                str(request()->string('with', ''))->contains('user'),
+                fn($query) => $query->with('user')
+            )
+            ->when(
+                str(request()->string('with', ''))->contains('logs'),
+                fn($query) => $query->with('logs')
+            )
+            ->paginate()
         );
     }
 
