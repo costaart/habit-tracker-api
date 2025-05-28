@@ -13,6 +13,10 @@ class HabitController extends Controller
 
     public function index()
     {
+        request()->validate([
+            'with' => ['string', 'nullable', 'in:user']
+        ]);
+
         // Essa forma não é performática, pois ela busca todos os registros 1 vez, depois no Resource ele faz outra query buscando os relacionamentos
         // return HabitResource::collection(
         //    Habit::all()
@@ -43,8 +47,7 @@ class HabitController extends Controller
 
     public function store(StoreHabitRequest $request)
     {
-        $data = $request->only('name', 'uuid');
-        $habit = Habit::create(array_merge($data, ['user_id' => 3]));
+        $habit = Habit::create(array_merge($request->validated(), ['user_id' => 3]));
         return HabitResource::make($habit);
     }
 
@@ -55,8 +58,7 @@ class HabitController extends Controller
 
     public function update(UpdateHabitRequest $request, Habit $habit)
     {
-        $data = $request->validated();
-        $habit->update($data);
+        $habit->update($request->validated());
         return HabitResource::make($habit);
     }
 

@@ -24,6 +24,7 @@ class HabitResource extends JsonResource
             'logs' => HabitLogResource::collection($this->whenLoaded('logs')),
             'links' => [
                 'self' => route('api.habits.show', $this),
+                'logs' => route('api.habits.logs.index', $this),
             ]
         ];
     }

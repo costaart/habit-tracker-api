@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\HabitController;
+use App\Http\Controllers\HabitLogController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -18,4 +19,8 @@ Route::prefix('/api')->name('api.')->group(function (){
     // É uma forma simples de declarar todas essas rotas acima, usando a convenção do Route Model Binding
     Route::apiResource('habits', HabitController::class)->scoped(['habit' => 'uuid']);
 
+    // Route::get('/habits/{habit:uuid}/logs', [HabitLogController::class, 'index'])->name('habits.logs.index');
+    Route::apiResource('habits.logs', HabitLogController::class)
+    ->only('index', 'store', 'destroy')
+    ->scoped(['habit' => 'uuid', 'log' => 'uuid']);
 });
