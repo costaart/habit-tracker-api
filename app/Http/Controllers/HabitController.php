@@ -13,9 +13,16 @@ class HabitController extends Controller
 
     public function index()
     {
+        $token = request()->string('token');
+        // $token = request()->bearerToken();
+
+        abort_unless($token == '2097', 403);
+
+        
         request()->validate([
             'with' => ['string', 'nullable', 'in:user']
         ]);
+        
 
         // Essa forma não é performática, pois ela busca todos os registros 1 vez, depois no Resource ele faz outra query buscando os relacionamentos
         // return HabitResource::collection(
