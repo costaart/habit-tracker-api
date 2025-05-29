@@ -6,10 +6,20 @@ use App\Http\Requests\StoreHabitRequest;
 use App\Http\Requests\UpdateHabitRequest;
 use App\Http\Resources\HabitResource;
 use App\Models\Habit;
+use GuzzleHttp\Middleware;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Support\Facades\Auth;
 
-class HabitController extends Controller
+class HabitController extends Controller implements HasMiddleware
 {
+
+    public static function middleware(): array
+    {
+        return [
+            new Middleware("can:own,habit", except: ['index', 'store']),
+        ];
+    }
 
     public function index()
     {
@@ -39,6 +49,7 @@ class HabitController extends Controller
         // Trazer os resultados caso o tenha query na api ?with
         return HabitResource::collection(
             Habit::query()
+            ->where('user_id', Auth::id())
             ->when(
                 str(request()->string('with', ''))->contains('user'),
                 fn($query) => $query->with('user')
@@ -54,7 +65,8 @@ class HabitController extends Controller
 
     public function store(StoreHabitRequest $request)
     {
-        $habit = Habit::create(array_merge($request->validated(), ['user_id' => 3]));
+        $habit = Auth::user()->habits()->create(($request->validated()));
+
         return HabitResource::make($habit);
     }
 

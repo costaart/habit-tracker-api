@@ -16,9 +16,13 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-// É uma forma simples de declarar todas essas rotas acima, usando a convenção do Route Model Binding
-Route::apiResource('habits', HabitController::class)->scoped(['habit' => 'uuid']);
+Route::name('api.')->middleware('auth:sanctum')->group(function(){
+    // É uma forma simples de declarar todas essas rotas acima, usando a convenção do Route Model Binding
+    Route::apiResource('habits', HabitController::class)
+    ->scoped(['habit' => 'uuid']);
 
-Route::apiResource('habits.logs', HabitLogController::class)
-->only('index', 'store', 'destroy')
-->scoped(['habit' => 'uuid', 'log' => 'uuid']);
+    Route::apiResource('habits.logs', HabitLogController::class)
+    ->only('index', 'store', 'destroy')
+    ->scoped(['habit' => 'uuid', 'log' => 'uuid']);
+});
+

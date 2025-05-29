@@ -11,5 +11,7 @@ Route::get('/', function () {
 
 
 Route::middleware('guest')->group(function(){
+    Route::post('/api/login', [AuthController::class, 'login']);
     Route::post('/api/register', [AuthController::class, 'register']);
+
 });
