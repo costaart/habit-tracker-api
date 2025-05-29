@@ -84,6 +84,16 @@ services:
       timeout: 5s
       retries: 2
 
+  mailpit:
+    image: axllent/mailpit
+    container_name: mailpit
+    restart: unless-stopped
+    ports:
+      - "8025:8025"
+      - "1025:1025"
+    networks:
+      - laravel
+
 networks:
   laravel:
 
