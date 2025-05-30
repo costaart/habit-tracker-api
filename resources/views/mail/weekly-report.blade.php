@@ -1,12 +1,11 @@
 <x-mail::message>
-# Introduction
+# Weekly Report
 
-The body of your message.
+Here is the weekly report for this week.
 
-<x-mail::button :url="''">
-Button Text
-</x-mail::button>
+<x-mail::table>
+    {{ $map }}
+</x-mail::table>
 
 Thanks,<br>
-{{ config('app.name') }}
 </x-mail::message>
